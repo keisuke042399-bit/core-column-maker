@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>柱状図ツール</title>
+<link rel="icon" href="icon.png">
+<style>
+:root{--bg:#eef0f2;--surface:#fff;--line:#ccd3da;--fg:#1b232b;--muted:#5a6672;--accent:#3a5f8f;--accent-fg:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#141a1f;--surface:#1d242b;--line:#36414c;--fg:#e2e8ee;--muted:#9aa7b3;--accent:#86aede;--accent-fg:#0f1722;color-scheme:dark}}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",system-ui,sans-serif;line-height:1.7}
+.wrap{max-width:860px;margin:0 auto;padding:40px max(16px,env(safe-area-inset-left,0px)) 56px}
+header{display:flex;gap:16px;align-items:center}
+header img{width:64px;height:64px}
+h1{font-size:26px;margin:0}
+.lead{color:var(--muted);margin:4px 0 0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:28px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.card h2{font-size:18px;margin:0}
+.card p{margin:0;color:var(--muted);font-size:14px}
+.card ul{margin:0;padding-left:1.2em;font-size:14px}
+a.btn{align-self:flex-start;margin-top:auto;background:var(--accent);color:var(--accent-fg);text-decoration:none;padding:8px 16px;border-radius:6px;font-weight:600}
+a.btn:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+section.note{margin-top:28px;font-size:14px;color:var(--muted)}
+section.note h3{color:var(--fg);font-size:15px;margin:0 0 6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="icon.png" alt="">
+    <div>
+      <h1>柱状図ツール</h1>
+      <p class="lead">Excel のデータから地質柱状図を描くブラウザ用ツールです。インストール不要で、Windows・Mac・タブレットのブラウザで動きます。データはブラウザの中だけで処理され、どこにも送信されません。</p>
+    </div>
+  </header>
+  <div class="cards">
+    <div class="card">
+      <h2>コア柱状図メーカー</h2>
+      <p>コア記載（区間・構造・含有物）から、コアを横に並べた柱状図を描きます。</p>
+      <ul>
+        <li>構造の柄（葉理・生物擾乱・スーピーなど）と記号（ノジュール・貝殻片・火山灰など）</li>
+        <li>岩相ごとの FGDC 柄、マンセル色での塗り</li>
+        <li>PNG・SVG・Illustrator 用スクリプト（.ai 作成）で出力</li>
+      </ul>
+      <a class="btn" href="core-column.html">開く</a>
+    </div>
+    <div class="card">
+      <h2>柱状図メーカー（地層）</h2>
+      <p>層厚・深度の表から、指定した長さで区切った地層柱状図を描きます。</p>
+      <ul>
+        <li>FGDC の岩相パターン（74 種）と地質記号</li>
+        <li>粒度で柱の幅を変える表示</li>
+        <li>PNG・SVG で出力</li>
+      </ul>
+      <a class="btn" href="strata-column.html">開く</a>
+    </div>
+  </div>
+  <section class="note">
+    <h3>使い方</h3>
+    <p>各ツールの「テンプレートExcelを保存」で入力用の Excel を作り、記入して読み込みます。地層用の入力例は <a href="samples/strata_sample.xlsx">strata_sample.xlsx</a> です。Illustrator 用スクリプト（.jsx）は、Illustrator の「ファイル → スクリプト → その他のスクリプト…」で実行すると .ai として保存できます。</p>
+  </section>
+</div>
+</body>
+</html>
