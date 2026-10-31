@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>柱状図ツールの使い方</title>
+<link rel="icon" href="icon.png">
+<style>
+:root{--bg:#eef0f2;--surface:#fff;--sunk:#e3e7eb;--line:#ccd3da;--fg:#1b232b;--muted:#5a6672;--accent:#3a5f8f;--accent-fg:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#141a1f;--surface:#1d242b;--sunk:#252e36;--line:#36414c;--fg:#e2e8ee;--muted:#9aa7b3;--accent:#86aede;--accent-fg:#0f1722;color-scheme:dark}}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",system-ui,sans-serif;line-height:1.75}
+.wrap{max-width:900px;margin:0 auto;padding:32px max(16px,env(safe-area-inset-left,0px)) 64px;display:grid;grid-template-columns:200px minmax(0,1fr);gap:32px}
+@media (max-width:760px){.wrap{grid-template-columns:minmax(0,1fr)}nav.toc{position:static!important}}
+nav.toc{position:sticky;top:20px;align-self:start;font-size:13.5px}
+nav.toc a{display:block;color:var(--muted);text-decoration:none;padding:3px 0}
+nav.toc a:hover{color:var(--accent)}
+nav.toc .home{color:var(--accent);font-weight:600;margin-bottom:10px}
+main{min-width:0}
+h1{font-size:26px;margin:0 0 4px;text-wrap:balance}
+h2{font-size:20px;margin:40px 0 10px;padding-top:8px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:24px 0 6px}
+p,li{font-size:15px}
+.lead{color:var(--muted);margin:0}
+code{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:var(--sunk);padding:1px 5px;border-radius:4px}
+ol.steps{padding-left:1.4em}
+ol.steps li{margin:6px 0}
+.tbl{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:14px;background:var(--surface)}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:var(--sunk);font-weight:600;white-space:nowrap}
+figure{margin:14px 0;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;overflow-x:auto}
+figure img{display:block;max-width:100%;height:auto}
+figcaption{font-size:13px;color:#5a6672;margin-top:6px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:12px 0}
+a{color:var(--accent)}
+a.btn{display:inline-block;background:var(--accent);color:var(--accent-fg);text-decoration:none;padding:6px 14px;border-radius:6px;font-weight:600;font-size:14px;margin:4px 6px 4px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="toc" aria-label="目次">
+  <a class="home" href="./">← トップへ</a>
+  <a href="#start">はじめに</a>
+  <a href="#core">コア柱状図メーカー</a>
+  <a href="#core-excel">　Excel の書き方</a>
+  <a href="#core-items">　「項目」に書ける言葉</a>
+  <a href="#core-lith">　岩相と色</a>
+  <a href="#core-settings">　描画の設定</a>
+  <a href="#ai">Illustrator（.ai）にする</a>
+  <a href="#strata">柱状図メーカー（地層）</a>
+  <a href="#faq">よくある質問</a>
+</nav>
+<main>
+  <h1>柱状図ツールの使い方</h1>
+  <p class="lead">Excel に記載を書いて読み込むと、柱状図が描けます。インストールは不要で、ブラウザ（Chrome・Edge・Safari・Firefox）だけで動きます。</p>
+
+  <h2 id="start">はじめに</h2>
+  <ol class="steps">
+    <li>トップページから使うツールを開きます。コア記載なら「コア柱状図メーカー」、地層の層厚表なら「柱状図メーカー（地層）」です。</li>
+    <li>入力例の Excel をダウンロードして、形を確認します。
+      <div><a class="btn" href="samples/core_sample.xlsx">コア記載の入力例</a><a class="btn" href="samples/strata_sample.xlsx">地層の入力例</a></div>
+      ツールの「テンプレートExcelを保存」でも、今表示しているデータを Excel に書き出せます。</li>
+    <li>自分のデータを Excel に書き、ツールの「ここにファイルをドロップ」に落とします（クリックして選んでも読み込めます）。</li>
+    <li>柄・色・大きさを調整し、PNG・SVG・Illustrator 用スクリプトで保存します。</li>
+  </ol>
+  <div class="box">読み込んだ Excel は、開いているブラウザの中だけで処理されます。サーバーには送られないので、未公表のデータでも使えます。</div>
+
+  <h2 id="core">コア柱状図メーカー</h2>
+  <p>コアごとの区間記載（構造・含有物・岩相・色）から、コアを横に並べた柱状図を描きます。</p>
+  <figure><img src="samples/example_core.png" alt="架空のコア7本を並べた柱状図。左に凡例、各コアに葉理・ノジュール・ハイドレートなどの記号" loading="lazy"><figcaption>ツールに入っている例（架空のコア）</figcaption></figure>
+
+  <h3 id="core-excel">Excel の書き方</h3>
+  <p>1行に1つの区間か、1つの記号を書きます。1行目は見出しです。列の順番は自由で、見出しの名前で判断します。</p>
+  <div class="tbl"><table>
+    <tr><th>見出し</th><th>内容</th><th>例</th></tr>
+    <tr><td>コア</td><td>コア名。同じコアが続く行は空欄でもかまいません（前の行のコア名を使います）</td><td>PC2601HF</td></tr>
+    <tr><td>セクション上端</td><td>任意。書くと「コア内の深度＝セクション上端＋上端」に換算します。記載シートのセクション内深度をそのまま書くときに使います</td><td>280.5</td></tr>
+    <tr><td>上端・下端</td><td>区間の深度。単位は設定で cm か m を選びます。点の記号は下端を空欄にするとその深度に1つ描きます</td><td>6.0　9.0</td></tr>
+    <tr><td>項目</td><td>構造や含有物。カンマで区切って複数書けます</td><td>gas hydrate bearing, soupy</td></tr>
+    <tr><td>岩相</td><td>任意。FGDC の柄を選ぶのに使います</td><td>silty clay</td></tr>
+    <tr><td>色</td><td>任意。マンセル表記。柱をこの色で塗れます</td><td>10Y 3/2</td></tr>
+    <tr><td>備考</td><td>自由記入（図には描きません）</td><td></td></tr>
+  </table></div>
+
+  <h3 id="core-items">「項目」に書ける言葉</h3>
+  <p>区間を塗る項目と、深度に置く記号があります。日本語や記載シートの言い回しでも判定し、判定できなかった語は表の「判定」欄に赤字で出ます。</p>
+  <div class="tbl"><table>
+    <tr><th>種類</th><th>書く言葉（例）</th></tr>
+    <tr><td>区間を塗る</td><td>massive（塊状）、laminae（葉理）、slight laminae（弱い葉理）、bioturbation（生物擾乱）、slight bioturbation（弱い生物擾乱）、burrow（巣穴）、soupy（スーピー）、gas hydrate bearing（ガスハイドレート）、disturbed（乱れ）、slump（スランプ）、sand stone（砂岩）、rock（岩石・礫）、carbonate clast（炭酸塩クラスト）、void / lost（空隙・欠損）、flow-in（フローイン）</td></tr>
+    <tr><td>記号を置く</td><td>carbonate nodule（炭酸塩ノジュール）、IRD、shell fragments（貝殻片）、wood fragments（木片）、ash layer（火山灰層）、ash pocket（火山灰パッチ）、pumice（軽石）</td></tr>
+    <tr><td>言い換えの例</td><td>weakly mottled → slight bioturbation、mottled・bioturbated → bioturbation、laminated → laminae、massive silty clay → massive</td></tr>
+  </table></div>
+  <p>記号を区間（上端と下端）で書くと、その区間の中に散らして描きます。ノジュールが多い区間などに使います。</p>
+
+  <h3 id="core-lith">岩相と色</h3>
+  <ul>
+    <li><b>岩相の柄</b>：「岩相」列の名前から FGDC の柄を自動で選びます（silty clay → 619、clay → 620、clayey silt → 616、very fine sand → 607、volcanic ash → 711 など）。「3. 岩相ごとの柄」で名前ごとに柄と色を変えられます。</li>
+    <li><b>柱の色</b>：「岩相ごとの色」「記載の色（マンセル値から近似）」「塗らない」から選びます。マンセル色は計算で近似した色なので、色票と完全には一致しません。</li>
+    <li><b>柱の地</b>：「灰色」を選ぶと、岩相の柄を使わない灰色の柱になります。</li>
+  </ul>
+
+  <h3 id="core-settings">描画の設定</h3>
+  <div class="tbl"><table>
+    <tr><th>設定</th><th>内容</th></tr>
+    <tr><td>入力の深度単位</td><td>Excel の深度が cm か m か</td></tr>
+    <tr><td>1 m あたりの長さ（mm）</td><td>縦の縮尺。小さくすると図が短くなります（10 m 近いコアを A4 に収めるなら 15 mm 前後）</td></tr>
+    <tr><td>柱の幅・コアの間隔（mm）</td><td>柱の太さと、隣のコアとの間隔</td></tr>
+    <tr><td>目盛りの間隔（m）</td><td>深度目盛りを打つ間隔</td></tr>
+    <tr><td>凡例</td><td>すべて載せる／使った項目だけ／なし</td></tr>
+  </table></div>
+
+  <h2 id="ai">Illustrator（.ai）にする</h2>
+  <ol class="steps">
+    <li>ツールの「Illustrator用スクリプト（.ai作成）」を押すと、<code>core_column.jsx</code> が保存されます。</li>
+    <li>Illustrator を起動し、「ファイル → スクリプト → その他のスクリプト…」で <code>core_column.jsx</code> を選びます。</li>
+    <li>図が組み立てられたあと、保存先を聞かれるので選ぶと .ai になります。</li>
+  </ol>
+  <p>.ai はレイヤーが「凡例」「コア名」「目盛り」「外枠」「記号」「柄」「岩相」「コア」に分かれ、各レイヤーの中はコアごとのグループになります。文字は Arial のテキスト、色は CMYK なので、あとから自由に編集できます。図形が多いと組み立てに少し時間がかかります。</p>
+  <p>Illustrator がない場合は「SVGで保存」を使ってください。SVG は Illustrator・Inkscape・PowerPoint などでも開けます。</p>
+
+  <h2 id="strata">柱状図メーカー（地層）</h2>
+  <p>層ごとの岩相と層厚（または深度）の表から、指定した長さで区切った地層柱状図を描きます。</p>
+  <figure><img src="samples/example_strata.png" alt="架空の地層を2区間に分けて描いた柱状図。岩相ごとの柄と凡例" loading="lazy"><figcaption>ツールに入っている例（架空の地層）</figcaption></figure>
+  <div class="tbl"><table>
+    <tr><th>見出し</th><th>内容</th></tr>
+    <tr><td>岩相</td><td>岩石名。名前から FGDC の柄を自動で選びます（例：泥岩、細粒砂岩、石灰質頁岩、凝灰岩）</td></tr>
+    <tr><td>層厚</td><td>層の厚さ（m）。代わりに「上端」「下端」の深度、または「深度」（下端）でも読めます</td></tr>
+    <tr><td>粒度</td><td>任意。泥／シルト／細粒砂／中粒砂／粗粒砂／礫。柱の幅に使います</td></tr>
+    <tr><td>備考</td><td>任意。柱の右に表示します</td></tr>
+    <tr><td>記号</td><td>任意。化石、サンゴ、級化、リップル、斜交葉理、平行葉理、チャネル、火山灰、試料、不整合、Lsc / Qz / Vc</td></tr>
+    <tr><td>柄</td><td>任意。FGDC の番号（例：627）を書くとその柄で描きます</td></tr>
+  </table></div>
+  <p>「区切る長さ」を 10 m にすると、10 m ごとに柱を横に並べます。0 にすると1本の柱で描きます。行を下（古い層）から書いた場合は「1行目が最下部」を選びます。</p>
+
+  <h2 id="faq">よくある質問</h2>
+  <h3>保存したファイルはどこに入りますか？</h3>
+  <p>ブラウザのダウンロード先（通常は「ダウンロード」フォルダ）です。</p>
+  <h3>スマホでも使えますか？</h3>
+  <p>表示と読み込みはできますが、画面が小さいので、PC かタブレットをおすすめします。</p>
+  <h3>ネットがない場所で使いたい</h3>
+  <p>このサイトの <code>core-column.html</code> や <code>strata-column.html</code> を保存しておけば、ダブルクリックで開いてオフラインでも使えます。</p>
+  <h3>柄の出典は？</h3>
+  <p>岩相パターンは FGDC Digital Cartographic Standard for Geologic Map Symbolization（FGDC-STD-013-2006）第37節を参考に描き直したもので、規格の図と細部は異なります。</p>
+</main>
+</div>
+</body>
+</html>
